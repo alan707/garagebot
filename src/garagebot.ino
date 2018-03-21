@@ -13,6 +13,10 @@
 
 SYSTEM_THREAD(ENABLED);
 
+int garagedoor = D0;               
+int val = 0; 
+
+
 //Create an instance of the RelayShield library, so we have something to talk to
 RelayShield myRelays;
 int relayOn(String command);
@@ -32,41 +36,46 @@ WidgetLED BlynkLED2(V5); // define LED to turn on and off on Blynk App.
 
 void setup()
 {
-    //.begin() sets up a couple of things and is necessary to use the rest of the functions
+ //.begin() sets up a couple of things and is necessary to use the rest of the functions
+ 
+ // read garage door switch
+ pinMode(garagedoor, INPUT_PULLDOWN);
+ 
+ 
     myRelays.begin();
     Blynk.begin(auth);
     myRelays.off(1);
     BlynkLED1.off(); // Start with all Bynk app LEDs turned off
-    BlynkLED2.on(); // Start with all Bynk app LEDs turned off
+    BlynkLED2.off(); // Start with all Bynk app LEDs turned off
     Particle.function("garageOpen", garageOpen);
     Particle.function("garageClosed", garageClosed);
 }
 
 void loop() {
+    
     Blynk.run();
+    if (digitalRead(garagedoor)) {
+    BlynkLED2.on();
+    BlynkLED1.off();
+    }
+    else{
+    BlynkLED1.on();
+    BlynkLED2.off();
+    }
 }
 
 BLYNK_WRITE(V1) {
-    static int oldParam = 0;
-    if (param.asInt() && !oldParam) { // On button press
-        toggleGarage();
-    }
-    oldParam = param.asInt();
+  static int oldParam = 0;
+  if (param.asInt() && !oldParam) { // On button press
+    toggleGarage();
+  }
+  oldParam = param.asInt();
 }
-
 
 void toggleGarage() {
     myRelays.on(1);
     delay(500);
     myRelays.off(1);
-    if (BlynkLED1.getValue()) {
-        BlynkLED1.off();
-        BlynkLED2.on();
-    } 
-    else {
-        BlynkLED1.on();
-        BlynkLED2.off();
-    }
 }
 
 
@@ -99,7 +108,7 @@ int relayOff(String command){
 // TODO: Integrate with IFTTT
 int garageOpen(String command)
 {
-    if (command == "garageOpen") // look for the matching argument from IFTTT <-- max of 64 characters long
+  if (command == "garageOpen") // look for the matching argument from IFTTT <-- max of 64 characters long
     {
         toggleGarage();
     }
@@ -108,12 +117,10 @@ int garageOpen(String command)
 
 // TODO: Integrate with IFTTT
 int garageClosed(String command) 
-{
+    {
     if(command == "garageClosed") // look for the matching argument  from IFTTT <-- max of 64 characters long
     {
         toggleGarage();
     }
     return 1;
 }
-
-

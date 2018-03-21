@@ -7,8 +7,9 @@ An internet connected, open source, garage door opener
 ### Hardware requirements:
 - Particle Photon
 - Particle RelayShield
-- 2 wires
+- 4 wires (2 x 2ft, 2 x 30 ft)
 - 12V Power Supply - 1A
+- Reed Switch (magnetic)
 
 ### Flash the Photon
 

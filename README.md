@@ -33,4 +33,4 @@ This is the file that specifies the name and version number of the libraries tha
 
 ### Compiling this project
 
-If you make any changes to this project, make sure you star the compilation at the root of the directory (i.e. garagebot). 
+If you make any changes to this project, make sure you start the compilation at the root of the directory (i.e. garagebot). 
